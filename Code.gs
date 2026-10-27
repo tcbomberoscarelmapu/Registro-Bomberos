@@ -26,7 +26,7 @@ const ROLES = ['Administrador','Oficial','Consulta'];
 function doGet() {
   return HtmlService.createHtmlOutputFromFile('Index')
     .setTitle(APP_NAME)
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.SAMEORIGIN)
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.DEFAULT)
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
 }
 
@@ -168,6 +168,13 @@ function login_(p) {
   CacheService.getScriptCache().put('session_' + token, JSON.stringify({id:u.id, usuario:u.usuario, nombre:u.nombre, rol:u.rol}), 21600);
   audit_({usuario:u.usuario}, 'inicio de sesión', 'Sesión', u.id, '');
   return ok_({token:token, user:publicUser_(u)});
+}
+
+function ok_(data) {
+  return {
+    ok: true,
+    data: data
+  };
 }
 function logout_(token) { if (token) CacheService.getScriptCache().remove('session_' + token); return ok_({loggedOut:true}); }
 function requireUser_(token) {
